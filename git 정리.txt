@@ -1,0 +1,168 @@
+- 해당 폴더(git_tutorial)에서 마우스 우측 클릭 -> git bash 실행
+
+--------------------------------------------------------------------------------
+*** 전체 요약
+
+- 구조 : working place --> staging area --> repository
+
+- 과정
+1. 해당 파일 수정
+2. git add를 통해 수정된 대상 파일을 staging area에 추가
+3. git commit을 통해 staging area에 추가된 파일들을 하나의 버전으로 업데이트
+4. git push로 원격 저장소로 파일 업데이트
+
+git pull로 원격 저장소에 있는 파일을 가져옴
+
+- 예시 순서
+1. git init
+2. git status (확인)
+3. git add test.txt
+4. git commit -m "init"
+5. git log (확인)
+6. git remote add origin https://github.com/bitamango/collaboration.git
+7. git remote -v
+8. git push -u origin main
+
+- 상황별 예시
+1. 원격만 변경된 경우 : 로컬과 동기화를 위해 pull로 먼저 땡겨와야함
+2. 로컬만 변경된 경우 : 원격에 push
+3. 원격과 로컬이 변경되었을 때 pull한 경우(가져온 경우)의 메모장
+first version
+second version
+<<<<<<< HEAD
+third version			--> 내가 작성했던 부분
+=======
+third versionnnn		--> 원격에서 변경되어 올라간 부분
+>>>>>>> a378eeaf43c9773c7f6c248864fecde7a1b7f1a8
+	-----> 살릴 부분만 살린 뒤 git commit -am 처리 후 push
+
+--------------------------------------------------------------------------------
+* pull request 날리기
+1. 협업 대상 repository fork하기
+ - 해당 github 페이지 안 repository에서 fork - 내 계정 클릭
+	--> 내 repository로 복사됨
+2. fork 해온 곳에서 clone하기
+ - 내 계정으로 가져온 자료에서 clone을 해야한다
+ - 해당 clone에 있는 url을 복사하여 내 컴퓨터로 자료를 가져와야함
+	- 대상 폴더에 git batch를 실행하여 가져오기
+	ex) git clone <url>
+ - 별도 : cd <폴더 이름> : 주소를 폴더 이름으로 들어감
+3. branch 만들고 작성하고자 하는 코드(commit) 작성
+ - 해당 branch에서 작성한 후 commit을 하면
+	--> 내 repository에 <branch name> "compare & pull request" 버튼이 확인됨
+		--> create pull request를 통해 merge 요청 발송 (main관리자에 요청하는 것)
+4. pull request 날린 branch는 지워주는 것이 좋음
+ 1. git checkout main으로 이동
+ 2. git branch -d <해당 branch 이름>
+	--> branch 삭제
+
+--------------------------------------------------------------------------------
+***명령어
+
+git init : 버전 관리 폴더 지정. working directory 생성 (.git 숨김폴더가 생성됨)
+
+git status : working directory 상태 확인
+
+git add test.txt : test.txt파일을 staging area에 추가
+git add . : 해당하는 폴더 내에 있는 변겅사항 전체를 전부 staging area에 추가
+
+git rm --catched test.txt : test.txt파일을 staging area에서 제거
+
+git commit -m "변경사항 작성" : "변경사항 작성"을 통해 어떤 점이 바뀌었는지 commit과 함께 버전 업데이트
+git commit -am "변경사항 작성" : add와 commit 동시 업데이트
+ --> 한번이라도 commit한 대상에 대해서만 사용 가능
+
+git log : commit의 로그를 확인 (commit된 버전 확인)
+
+git push : commit한 버전을 원격으로 push해줌
+
+
+
+git reset --hard HEAD^ : 전체(working directory, staging area, repository)를 통째로 되돌림
+git reset --mixed HEAD^ : working directory 제외한 staging area, repository를 전으로 되돌림
+git reset --soft HEAD^ : repository만(commit한 것만) 되돌림
+ㄴ HEAD : 가장 최근 버전(commit)을 뜻함
+ㄴ ^ : 커밋 버전의 개수를 뜻함 <commit (^개수)만큼 전으로 되돌려라>
+
+git diff, git revert도 유용하다고함
+
+
+
+git branch : 해당하는 개발자 확인 (main이 관리자)
+git branch <이름> : 해당하는 이름으로 it branch 추가
+
+git checkout <이름> : 해당하는 이름의 branch로 들어가기
+ --> 해당하는 branch에서 만든 파일은 해당 branch에서만 보임
+
+* my_branch에 있는 my_branch.txt 파일을 main에 합치고 싶을 땐
+ --> 병합의 결과가 되는 대상에 checkout (main이 병합의 결과)
+
+git merge <브랜치 이름> : 해당 브랜치에 있는 파일을 합침(가져옴)
+--> checkout을 main으로 한 상태에서 진행해야함
+--> main으로 branch에 있는 파일을 가져오는 형태
+
+
+git branch
+git branch <새로운 branch>
+git checkout <새로운 branch>
+--> 3단계 한번에 적용하는 명렁어
+	: git checkout -b <새로운 branch>
+
+
+
+ls -al : 파일 로그 확인
+
+
+git remote (-v) : 원격저장소 조회(추가)하기
+ - 내 로컬 repository와 상호작용하고 있는(할 수 있는) 원격 저장소들의 목록을 조회
+ - (-v) 옵션 : 단축이름과 URL 같이 보기
+	ex) git remote add <단축이름> <url>
+		: url에 있는 원격저장소를 origin이라는 이름으로 추가하기
+		(기존 워킹 디렉토리에 새 원격저장소를 추가하는 명령어)
+	ex) git remote rm <단축이름>
+		: 해당하는 원격저장소 제거
+
+git push : 원격저장소에 밀어넣기
+ ex) git push -u origin main
+	: 내 repository의 main 브랜치를 origin의 main 브랜치로 push하라
+ - (-u) : 디폴트 설정 (후에 git push만으로 사용 가능)
+
+git pull : 원격저장소 갖고 와서 합치기(동기화)
+ ex) git pull (origin main)
+	: origin을 내 repository의 main브랜치로 갖고와라(merge)
+
+git fetch : 원격저장소 일단 갖고만 오기
+ ex) git fetch (origin main)
+	: 동기화 하지 않고(merge하지 않고) origin을 내 repository의 main 브랜치로 일단 갖고 와라
+ ex) git checkout FETCH_HEAD
+      = git checkout remote2/main
+	: 원격저장소에 바뀐 내용 확인 가능 (변경부분 확인 용도)
+		--> 후에 checkout main으로 돌아가면 다시 원래대로 돌아옴
+
+git clone : 원격저장소 복사하기
+ ex) git clone <url>
+	: url에 있는 원격 저장소 내용을 현재 디렉토리에 복사해오기
+
+origin : 자동 생성
+
+--------------------------------------------------------------------------------
+코드 붙여넣기 필요
+
+
+*** create a new repository on the command line
+
+echo "# test" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/bitamango/test.git
+git push -u origin main
+
+*** 원격저장소(컴퓨터)와 로컬저장소(github)를 연결해주는 명령어. push an existing repository from the command line
+
+git remote add origin https://github.com/bitamango/test.git
+git branch -M main
+git push -u origin main
+
+--------------------------------------------------------------------------------
